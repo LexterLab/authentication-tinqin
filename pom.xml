@@ -8,7 +8,7 @@
         <version>3.3.2</version>
         <relativePath/>
     </parent>
-    <groupId>com.tinqinacademy</groupId>
+    <groupId>com.tinqinacademy.authentication</groupId>
     <artifactId>authentication</artifactId>
     <version>${revision}</version>
     <name>authentication-api</name>
