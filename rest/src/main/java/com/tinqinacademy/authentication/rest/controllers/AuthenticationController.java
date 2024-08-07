@@ -2,6 +2,9 @@ package com.tinqinacademy.authentication.rest.controllers;
 
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
 import com.tinqinacademy.authentication.api.errors.ErrorOutput;
+import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistration;
+import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
+import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationOutput;
 import com.tinqinacademy.authentication.api.operations.login.Login;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginOutput;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController extends BaseController {
     private final Register register;
     private final Login login;
+    private final ConfirmRegistration confirmRegistration;
 
     @Operation(
             summary = "Register Rest API",
@@ -52,6 +56,12 @@ public class AuthenticationController extends BaseController {
     @PostMapping(RestAPIRoutes.LOGIN)
     public ResponseEntity<?> login(@RequestBody LoginInput input) {
         Either<ErrorOutput, LoginOutput> output = login.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
+
+    @PostMapping(RestAPIRoutes.CONFIRM_REGISTRATION)
+    public ResponseEntity<?> confirmRegistration(@RequestBody ConfirmRegistrationInput input) {
+        Either<ErrorOutput, ConfirmRegistrationOutput> output = confirmRegistration.process(input);
         return handleOutput(output, HttpStatus.OK);
     }
 
