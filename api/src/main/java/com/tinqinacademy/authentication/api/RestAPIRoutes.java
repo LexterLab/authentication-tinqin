@@ -2,4 +2,6 @@ package com.tinqinacademy.authentication.api;
 
 public class RestAPIRoutes {
     public static final String ROOT = "/api/v1";
+    public static final String AUTHENTICATE = ROOT + "/auth";
+    public static final String REGISTER =  AUTHENTICATE + "/register";
 }
