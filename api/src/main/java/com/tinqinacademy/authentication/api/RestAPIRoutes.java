@@ -4,4 +4,5 @@ public class RestAPIRoutes {
     public static final String ROOT = "/api/v1";
     public static final String AUTHENTICATE = ROOT + "/auth";
     public static final String REGISTER =  AUTHENTICATE + "/register";
+    public static final String LOGIN =  AUTHENTICATE + "/login";
 }
