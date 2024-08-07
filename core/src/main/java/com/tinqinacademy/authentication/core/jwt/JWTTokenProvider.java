@@ -23,7 +23,7 @@ public class JWTTokenProvider {
     public String generateToken(String username) {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);;
-        Claims claims = (Claims) Jwts.claims().subject(username);
+        Claims claims = Jwts.claims().subject(username).build();
         return Jwts.builder()
                 .claims(claims)
                 .issuedAt(new Date())

@@ -1,6 +1,7 @@
 package com.tinqinacademy.authentication.core.security;
 
 import com.tinqinacademy.authentication.api.Messages;
+import com.tinqinacademy.authentication.api.exceptions.EmailNotConfirmedException;
 import com.tinqinacademy.authentication.persistence.models.User;
 import com.tinqinacademy.authentication.persistence.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByUsernameIgnoreCase(email)
                 .orElseThrow(() -> new UsernameNotFoundException(Messages.USER_NOT_FOUND_WITH_USERNAME + email));
+
+        if (!user.getIsVerified()) {
+            throw new EmailNotConfirmedException(email);
+        }
 
         Set<GrantedAuthority> authorities = user
                 .getRoles()

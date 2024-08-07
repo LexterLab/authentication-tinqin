@@ -9,4 +9,5 @@ public class Messages {
     public static final String USER_NOT_FOUND_WITH_USERNAME = "User not found with username: ";
     public static final String EMAIL_ALREADY_EXISTS = "Email already exists: %s";
     public static final String USERNAME_ALREADY_EXISTS = "Username already exists: %s";
+    public static final String EMAIL_NOT_VERIFIED = "Email not verified: %s";
 }
