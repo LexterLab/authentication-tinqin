@@ -1,7 +1,6 @@
 package com.tinqinacademy.authentication.api.operations.register;
 
 import com.tinqinacademy.authentication.api.base.OperationInput;
-import com.tinqinacademy.authentication.api.validators.PasswordValueMatches;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -15,12 +14,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @Setter
 @Builder
-@PasswordValueMatches.List({
-        @PasswordValueMatches(
-                field = "password",
-                fieldMatch = "confirmPassword"
-        )
-})
+
 public class RegisterInput implements OperationInput {
     @NotBlank(message = "Field email cannot be blank")
     @Length(max = 80, min = 5, message = "Field email must be 5-80 characters")
