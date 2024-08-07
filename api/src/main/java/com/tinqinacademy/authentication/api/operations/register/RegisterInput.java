@@ -19,9 +19,11 @@ public class RegisterInput implements OperationInput {
     @NotBlank(message = "Field email cannot be blank")
     @Length(max = 80, min = 5, message = "Field email must be 5-80 characters")
     @Email(message = "Field email must be a valid email")
+    @Schema(example = "domino@gmail.com")
     private String email;
     @NotBlank(message = "Field username cannot be blank")
     @Length(max = 80, min = 4, message = "Field username must be 4-80 characters")
+    @Schema(example = "domino")
     private String username;
     @Schema(example = "Michael")
     @NotBlank(message = "Field firstName must not be empty")
