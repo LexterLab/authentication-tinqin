@@ -11,4 +11,5 @@ public class Messages {
     public static final String USERNAME_ALREADY_EXISTS = "Username already exists: %s";
     public static final String EMAIL_NOT_VERIFIED = "Email not verified: %s";
     public static final String TOKEN_EXPIRED = "Token expired: %s";
+    public static final String TOKEN_ALREADY_CONFIRMED = "Token already confirmed: %s";
 }
