@@ -1,5 +1,6 @@
 package com.tinqinacademy.authentication.rest;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -14,6 +15,9 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableFeignClients(basePackages = {"com.tinqinacademy.authentication"})
 public class AuthenticationApplication {
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.configure().load();
+        System.setProperty("app.jwt-secret", dotenv.get("JWT_SECRET"));
+
         SpringApplication.run(AuthenticationApplication.class, args);
     }
 }
