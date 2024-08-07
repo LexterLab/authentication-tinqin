@@ -20,10 +20,10 @@ public class JWTTokenProvider {
     @Value("${app.jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
-    public String generateToken(String email) {
+    public String generateToken(String username) {
         Date currentDate = new Date();
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);;
-        Claims claims = (Claims) Jwts.claims().subject(email);
+        Claims claims = (Claims) Jwts.claims().subject(username);
         return Jwts.builder()
                 .claims(claims)
                 .issuedAt(new Date())
