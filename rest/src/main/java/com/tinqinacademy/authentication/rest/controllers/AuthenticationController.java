@@ -59,6 +59,15 @@ public class AuthenticationController extends BaseController {
         return handleOutput(output, HttpStatus.OK);
     }
 
+
+    @Operation(
+            summary = "Confirm Registration Rest API",
+            description = "Confirm Registration Rest API is used for verifying users"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+    })
     @PostMapping(RestAPIRoutes.CONFIRM_REGISTRATION)
     public ResponseEntity<?> confirmRegistration(@RequestBody ConfirmRegistrationInput input) {
         Either<ErrorOutput, ConfirmRegistrationOutput> output = confirmRegistration.process(input);
