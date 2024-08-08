@@ -2,6 +2,9 @@ package com.tinqinacademy.authentication.rest.controllers;
 
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
 import com.tinqinacademy.authentication.api.errors.ErrorOutput;
+import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromToken;
+import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenInput;
+import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenOutput;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessToken;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessTokenInput;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessTokenOutput;
@@ -22,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Token REST APIs")
 public class TokenController extends BaseController {
     private final ValidateAccessToken validateAccessToken;
-
+    private final GetUsernameFromToken getUsernameFromToken;
 
 
     @Operation(
@@ -36,6 +39,21 @@ public class TokenController extends BaseController {
     @PostMapping(RestAPIRoutes.VALIDATE_TOKEN)
     public ResponseEntity<?> validateAccessToken(@RequestBody ValidateAccessTokenInput input) {
         Either<ErrorOutput, ValidateAccessTokenOutput> results = validateAccessToken.process(input);
+        return handleOutput(results, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get Username from Token Rest API",
+            description = "Get Username from Token Rest API is used for verifying access tokens"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+    })
+    @PostMapping(RestAPIRoutes.GET_USER_FROM_TOKEN)
+    public ResponseEntity<?> getUsernameFromToken(@RequestBody GetUsernameFromTokenInput input) {
+        Either<ErrorOutput, GetUsernameFromTokenOutput> results = getUsernameFromToken
+                .process(input);
         return handleOutput(results, HttpStatus.OK);
     }
 }
