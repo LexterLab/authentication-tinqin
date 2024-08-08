@@ -6,9 +6,9 @@ import lombok.*;
 @Builder
 @ToString
 @AllArgsConstructor
-@NonNull
+@NoArgsConstructor
 @Getter
 @Setter
 public class ValidateAccessTokenOutput implements OperationOutput {
-    private boolean success;
+    private Boolean success;
 }

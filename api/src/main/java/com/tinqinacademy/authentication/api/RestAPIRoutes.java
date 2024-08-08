@@ -8,4 +8,5 @@ public class RestAPIRoutes {
     public static final String CONFIRM_REGISTRATION =  AUTHENTICATE + "/confirm-registration";
     public static final String VALIDATE_TOKEN =  AUTHENTICATE + "/validate-token";
     public static final String GET_USER_FROM_TOKEN =  AUTHENTICATE + "/user";
+    public static final String LOAD_USER =  AUTHENTICATE + "/load-user";
 }
