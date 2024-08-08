@@ -5,6 +5,9 @@ import com.tinqinacademy.authentication.api.errors.ErrorOutput;
 import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromToken;
 import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenInput;
 import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenOutput;
+import com.tinqinacademy.authentication.api.operations.loaduserdetails.LoadUserDetails;
+import com.tinqinacademy.authentication.api.operations.loaduserdetails.LoadUserDetailsInput;
+import com.tinqinacademy.authentication.api.operations.loaduserdetails.LoadUserDetailsOutput;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessToken;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessTokenInput;
 import com.tinqinacademy.authentication.api.operations.validateacesstoken.ValidateAccessTokenOutput;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController extends BaseController {
     private final ValidateAccessToken validateAccessToken;
     private final GetUsernameFromToken getUsernameFromToken;
+    private final LoadUserDetails loadUserDetails;
 
 
     @Operation(
@@ -55,5 +59,20 @@ public class TokenController extends BaseController {
         Either<ErrorOutput, GetUsernameFromTokenOutput> results = getUsernameFromToken
                 .process(input);
         return handleOutput(results, HttpStatus.OK);
+    }
+
+
+    @Operation(
+            summary = "Load User from Token Rest API",
+            description = "Get Username from Token Rest API is used for verifying access tokens"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+    })
+    @PostMapping(RestAPIRoutes.LOAD_USER)
+    public ResponseEntity<?> loadUser(@RequestBody LoadUserDetailsInput input) {
+        Either<ErrorOutput, LoadUserDetailsOutput> result = loadUserDetails.process(input);
+        return handleOutput(result, HttpStatus.OK);
     }
 }
