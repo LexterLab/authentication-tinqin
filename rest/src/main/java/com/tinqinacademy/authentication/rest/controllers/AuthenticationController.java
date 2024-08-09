@@ -5,6 +5,9 @@ import com.tinqinacademy.authentication.api.errors.ErrorOutput;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistration;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationOutput;
+import com.tinqinacademy.authentication.api.operations.getuser.GetUser;
+import com.tinqinacademy.authentication.api.operations.getuser.GetUserInput;
+import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
 import com.tinqinacademy.authentication.api.operations.login.Login;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginOutput;
@@ -19,9 +22,7 @@ import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class AuthenticationController extends BaseController {
     private final Register register;
     private final Login login;
     private final ConfirmRegistration confirmRegistration;
+    private final GetUser getUser;
 
     @Operation(
             summary = "Register Rest API",
@@ -72,6 +74,24 @@ public class AuthenticationController extends BaseController {
     public ResponseEntity<?> confirmRegistration(@RequestBody ConfirmRegistrationInput input) {
         Either<ErrorOutput, ConfirmRegistrationOutput> output = confirmRegistration.process(input);
         return handleOutput(output, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Get User Info Rest API",
+            description = "Get User Info  Rest API is used for retrieving signed  user's info"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
+    })
+    @GetMapping(RestAPIRoutes.GET_USER)
+    public ResponseEntity<?> getUserInfo(@PathVariable String username) {
+        Either<ErrorOutput, GetUserOutput> outputs = getUser.process(GetUserInput
+                .builder()
+                .username(username)
+                .build());
+        return handleOutput(outputs, HttpStatus.OK);
     }
 
 }
