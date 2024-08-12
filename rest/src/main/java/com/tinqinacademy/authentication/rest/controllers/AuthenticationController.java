@@ -2,6 +2,9 @@ package com.tinqinacademy.authentication.rest.controllers;
 
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
 import com.tinqinacademy.authentication.api.errors.ErrorOutput;
+import com.tinqinacademy.authentication.api.operations.changepassword.ChangePassword;
+import com.tinqinacademy.authentication.api.operations.changepassword.ChangePasswordInput;
+import com.tinqinacademy.authentication.api.operations.changepassword.ChangePasswordOutput;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistration;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationOutput;
@@ -44,6 +47,7 @@ public class AuthenticationController extends BaseController {
     private final RecoverPassword recoverPassword;
     private final ResetPassword resetPassword;
     private final ValidateRecoveryCode validateRecoveryCode;
+    private final ChangePassword changePassword;
 
     @Operation(
             summary = "Register Rest API",
@@ -125,6 +129,8 @@ public class AuthenticationController extends BaseController {
     )
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @PostMapping(RestAPIRoutes.RESET_PASSWORD)
     public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordInput input) {
@@ -138,10 +144,27 @@ public class AuthenticationController extends BaseController {
     )
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @PostMapping(RestAPIRoutes.VALIDATE_RECOVERY_CODE)
     public ResponseEntity<?> validateRecoveryCode(@RequestBody ValidateRecoveryCodeInput input) {
         Either<ErrorOutput, ValidateRecoveryCodeOutput> output = validateRecoveryCode.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Change Password Rest API",
+            description = "Change Password API is used for changing user's password"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
+    })
+    @PostMapping(RestAPIRoutes.CHANGE_PASSWORD)
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordInput input) {
+        Either<ErrorOutput, ChangePasswordOutput> output = changePassword.process(input);
         return handleOutput(output, HttpStatus.OK);
     }
 
