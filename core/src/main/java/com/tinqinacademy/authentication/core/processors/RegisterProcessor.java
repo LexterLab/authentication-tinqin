@@ -69,7 +69,7 @@ public class RegisterProcessor extends BaseProcessor implements Register {
                     .id(user.getId())
                     .build();
 
-//            emailClient.sendConfirmEmail(buildEmail(user));
+            emailClient.sendConfirmEmail(buildEmail(user));
 
 
             log.info("End register {}", output);
