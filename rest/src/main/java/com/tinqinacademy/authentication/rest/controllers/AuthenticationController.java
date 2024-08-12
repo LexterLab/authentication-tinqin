@@ -17,6 +17,12 @@ import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPa
 import com.tinqinacademy.authentication.api.operations.register.Register;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterOutput;
+import com.tinqinacademy.authentication.api.operations.resetpassword.ResetPassword;
+import com.tinqinacademy.authentication.api.operations.resetpassword.ResetPasswordInput;
+import com.tinqinacademy.authentication.api.operations.resetpassword.ResetPasswordOutput;
+import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCode;
+import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCodeInput;
+import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCodeOutput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,6 +42,8 @@ public class AuthenticationController extends BaseController {
     private final ConfirmRegistration confirmRegistration;
     private final GetUser getUser;
     private final RecoverPassword recoverPassword;
+    private final ResetPassword resetPassword;
+    private final ValidateRecoveryCode validateRecoveryCode;
 
     @Operation(
             summary = "Register Rest API",
@@ -108,6 +116,32 @@ public class AuthenticationController extends BaseController {
     @PostMapping(RestAPIRoutes.RECOVER_PASSWORD)
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordInput input) {
         Either<ErrorOutput, RecoverPasswordOutput> output = recoverPassword.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Reset Password Rest API",
+            description = "Reset Password Rest API is used for resetting user's password with code"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+    })
+    @PostMapping(RestAPIRoutes.RESET_PASSWORD)
+    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordInput input) {
+        Either<ErrorOutput, ResetPasswordOutput> output = resetPassword.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Validate Recovery Code Rest API",
+            description = "Validate Recovery Code API is used for validating recovery code before resetting password"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+    })
+    @PostMapping(RestAPIRoutes.VALIDATE_RECOVERY_CODE)
+    public ResponseEntity<?> validateRecoveryCode(@RequestBody ValidateRecoveryCodeInput input) {
+        Either<ErrorOutput, ValidateRecoveryCodeOutput> output = validateRecoveryCode.process(input);
         return handleOutput(output, HttpStatus.OK);
     }
 
