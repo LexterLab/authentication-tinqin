@@ -18,7 +18,9 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static io.vavr.API.Match;
@@ -40,6 +42,7 @@ public class ResetPasswordProcessor extends BaseProcessor implements ResetPasswo
     }
 
     @Override
+    @Transactional
     public Either<ErrorOutput, ResetPasswordOutput> process(ResetPasswordInput input) {
         log.info("Start resetPassword {}", input.getCode());
 
@@ -49,6 +52,9 @@ public class ResetPasswordProcessor extends BaseProcessor implements ResetPasswo
             RecoveryToken token = fetchToken(input);
 
             checkIfTokenAlreadyUsed(token);
+
+            token.setConfirmedAt(LocalDateTime.now().toString());
+            recoveryTokenRepository.save(token);
 
             User user = fetchUserFromToken(token);
 
