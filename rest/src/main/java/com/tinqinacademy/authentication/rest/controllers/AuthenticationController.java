@@ -11,6 +11,9 @@ import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
 import com.tinqinacademy.authentication.api.operations.login.Login;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginOutput;
+import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPassword;
+import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordInput;
+import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordOutput;
 import com.tinqinacademy.authentication.api.operations.register.Register;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterOutput;
@@ -32,6 +35,7 @@ public class AuthenticationController extends BaseController {
     private final Login login;
     private final ConfirmRegistration confirmRegistration;
     private final GetUser getUser;
+    private final RecoverPassword recoverPassword;
 
     @Operation(
             summary = "Register Rest API",
@@ -92,6 +96,19 @@ public class AuthenticationController extends BaseController {
                 .username(username)
                 .build());
         return handleOutput(outputs, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Recover Password Rest API",
+            description = "Recover Password Rest API is used for sending password recovery email to users"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+    })
+    @PostMapping(RestAPIRoutes.RECOVER_PASSWORD)
+    public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordInput input) {
+        Either<ErrorOutput, RecoverPasswordOutput> output = recoverPassword.process(input);
+        return handleOutput(output, HttpStatus.OK);
     }
 
 }
