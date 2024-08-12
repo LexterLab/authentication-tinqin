@@ -11,4 +11,6 @@ public class RestAPIRoutes {
     public static final String LOAD_USER =  AUTHENTICATE + "/load-user";
     public static final String GET_USER =  AUTHENTICATE + "/user/{username}";
     public static final String RECOVER_PASSWORD =  AUTHENTICATE + "/recover-password";
+    public static final String RESET_PASSWORD =  AUTHENTICATE + "/reset-password";
+    public static final String VALIDATE_RECOVERY_CODE =  AUTHENTICATE + "/validate-recovery-code";
 }
