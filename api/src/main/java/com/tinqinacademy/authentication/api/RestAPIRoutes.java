@@ -10,4 +10,5 @@ public class RestAPIRoutes {
     public static final String GET_USER_FROM_TOKEN =  AUTHENTICATE + "/user";
     public static final String LOAD_USER =  AUTHENTICATE + "/load-user";
     public static final String GET_USER =  AUTHENTICATE + "/user/{username}";
+    public static final String RECOVER_PASSWORD =  AUTHENTICATE + "/recover-password";
 }
