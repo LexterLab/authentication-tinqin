@@ -23,6 +23,11 @@
             <version>${revision}</version>
         </dependency>
         <dependency>
+            <groupId>com.tinqinacademy.authentication</groupId>
+            <artifactId>domain</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>${jwt-version}</version>

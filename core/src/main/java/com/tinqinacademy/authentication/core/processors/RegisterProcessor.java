@@ -7,14 +7,14 @@ import com.tinqinacademy.authentication.api.exceptions.UsernameAlreadyExistExcep
 import com.tinqinacademy.authentication.api.operations.register.Register;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterOutput;
-import com.tinqinacademy.authentication.api.operations.sendconfirmemail.SendConfirmEmail;
-import com.tinqinacademy.authentication.api.operations.sendconfirmemail.SendConfirmEmailInput;
 import com.tinqinacademy.authentication.persistence.models.ConfirmationToken;
 import com.tinqinacademy.authentication.persistence.models.Role;
 import com.tinqinacademy.authentication.persistence.models.User;
 import com.tinqinacademy.authentication.persistence.crudrepositories.ConfirmationTokenRepository;
 import com.tinqinacademy.authentication.persistence.repositories.RoleRepository;
 import com.tinqinacademy.authentication.persistence.repositories.UserRepository;
+import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailInput;
+import com.tinqinacademy.emails.restexport.EmailClient;
 import io.vavr.control.Either;
 import io.vavr.control.Try;
 import jakarta.validation.Validator;
@@ -38,16 +38,17 @@ public class RegisterProcessor extends BaseProcessor implements Register {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-    private final SendConfirmEmail sendConfirmEmail;
+    private final EmailClient emailClient;
     private final ConfirmationTokenRepository confirmationTokenRepository;
 
     public RegisterProcessor(ConversionService conversionService, Validator validator, UserRepository userRepository,
-                             RoleRepository roleRepository, PasswordEncoder passwordEncoder, SendConfirmEmail sendConfirmEmail, ConfirmationTokenRepository confirmationTokenRepository) {
+                             RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+                             EmailClient emailClient, ConfirmationTokenRepository confirmationTokenRepository) {
         super(conversionService, validator);
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.sendConfirmEmail = sendConfirmEmail;
+        this.emailClient = emailClient;
         this.confirmationTokenRepository = confirmationTokenRepository;
     }
 
@@ -68,8 +69,9 @@ public class RegisterProcessor extends BaseProcessor implements Register {
                     .id(user.getId())
                     .build();
 
-            SendConfirmEmailInput sendConfirmEmailInput = buildEmail(user);
-            sendConfirmEmail.process(sendConfirmEmailInput);
+//            emailClient.sendConfirmEmail(buildEmail(user));
+
+
             log.info("End register {}", output);
             return output;
         }).toEither()
@@ -77,6 +79,7 @@ public class RegisterProcessor extends BaseProcessor implements Register {
                         validatorCase(throwable),
                         customCase(throwable, HttpStatus.BAD_REQUEST, EmailAlreadyExistsException.class),
                         customCase(throwable, HttpStatus.BAD_REQUEST, UsernameAlreadyExistException.class),
+                        feignCase(throwable),
                         defaultCase(throwable)
                 ));
     }
@@ -106,11 +109,10 @@ public class RegisterProcessor extends BaseProcessor implements Register {
 
     private SendConfirmEmailInput buildEmail(User user) {
         log.info("Start buildEmail {}", user.getUsername());
-        SendConfirmEmailInput email = SendConfirmEmailInput
+      SendConfirmEmailInput email = SendConfirmEmailInput
                 .builder()
                 .code(createConfirmationToken(user))
                 .recipient(user.getEmail())
-                .subject("Email Confirmation")
                 .build();
         log.info("End buildEmail {}", user.getUsername());
         return email;

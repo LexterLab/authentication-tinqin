@@ -1,9 +1,13 @@
 package com.tinqinacademy.authentication.core.processors;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.base.OperationInput;
 import com.tinqinacademy.authentication.api.errors.Error;
 import com.tinqinacademy.authentication.api.errors.ErrorOutput;
+import com.tinqinacademy.authentication.api.exceptions.FeignServiceException;
 import com.tinqinacademy.authentication.api.exceptions.InputValidationException;
+import feign.FeignException;
 import io.vavr.API;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -51,6 +55,18 @@ public abstract class BaseProcessor {
                 .build());
     }
 
+    protected API.Match.Case<Exception, ErrorOutput> feignCase(Throwable throwable) {
+        return Case($(instanceOf(FeignException.class)), () ->  {
+            FeignServiceException feignServiceException = toCustomFeignException((FeignException) throwable);
+            return  ErrorOutput.builder()
+                    .errors(List.of(Error.builder()
+                            .message(feignServiceException.getMessage())
+                            .build()))
+                    .statusCode(feignServiceException.getHttpStatus())
+                    .build();
+        });
+    }
+
     protected void validateInput(OperationInput input) {
         Set<ConstraintViolation<OperationInput>> violations = validator.validate(input);
         if (!violations.isEmpty()) {
@@ -76,5 +92,19 @@ public abstract class BaseProcessor {
                             .field(error.getField()).build()));
         }
         return errors;
+    }
+
+    private FeignServiceException toCustomFeignException(FeignException feignException) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode errorBody = objectMapper.readTree(feignException.contentUTF8());
+            String message = errorBody.get("errors").get(0).get("message").asText();
+            String statusCode = errorBody.get("statusCode").asText();
+
+            HttpStatus httpStatus = HttpStatus.valueOf(statusCode);
+            return new FeignServiceException(message, httpStatus);
+        } catch (Exception e) {
+            return new FeignServiceException("UNKNOWN_ERROR", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
