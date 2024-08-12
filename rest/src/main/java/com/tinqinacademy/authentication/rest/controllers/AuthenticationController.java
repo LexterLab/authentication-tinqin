@@ -29,6 +29,7 @@ import com.tinqinacademy.authentication.api.operations.validaterecoverycode.Vali
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
@@ -162,6 +163,9 @@ public class AuthenticationController extends BaseController {
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
     @PostMapping(RestAPIRoutes.CHANGE_PASSWORD)
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordInput input) {
         Either<ErrorOutput, ChangePasswordOutput> output = changePassword.process(input);

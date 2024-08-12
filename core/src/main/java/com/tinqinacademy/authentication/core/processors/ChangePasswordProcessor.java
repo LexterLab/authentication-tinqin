@@ -62,10 +62,10 @@ public class ChangePasswordProcessor extends BaseProcessor implements ChangePass
     }
 
     private User fetchUser() {
-        String email = request.getParameter("email");
-        log.info("Start fetchUser {}", email);
-        User user = userRepository.findUserByEmailIgnoreCase(email)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "Email", email));
+        String username = (String) request.getAttribute("username");
+        log.info("Start fetchUser {}", username);
+        User user = userRepository.findUserByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "username", username));
         log.info("End fetchUser {}", user.getUsername());
         return user;
     }
