@@ -28,5 +28,6 @@ public class ChangePasswordInput implements OperationInput {
     @Size(min = 8, max = 255, message = "Field password must be 8-255 chars")
     private String newPassword;
     @Email(message = "Field email must be a valid email")
+    @Schema(example = "domino222@gmail.com")
     private String email;
 }
