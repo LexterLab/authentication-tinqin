@@ -12,5 +12,6 @@ public class Messages {
     public static final String EMAIL_NOT_VERIFIED = "Email not verified: %s";
     public static final String TOKEN_ALREADY_CONFIRMED = "Token already confirmed: %s";
     public static final String USER_ALREADY_VERIFIED = "User already verified: %s";
-    public static final String IDENTICAL_PASSWORDS = "Passwords do not match";
+    public static final String IDENTICAL_PASSWORDS = "Passwords are identical";
+    public static final String PASSWORD_DONT_MATCH = "Passwords do not match";
 }
