@@ -13,6 +13,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findUserByUsernameIgnoreCase(String username);
     Optional<User> findUserByEmailIgnoreCase(String email);
+    Optional<User> findUserByPhoneNo(String phoneNo);
     Boolean existsByUsernameIgnoreCase(String username);
     Boolean existsByEmailIgnoreCase(String email);
     Long countUserByRolesContaining(Role role);
