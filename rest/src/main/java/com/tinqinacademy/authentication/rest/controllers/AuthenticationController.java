@@ -8,6 +8,9 @@ import com.tinqinacademy.authentication.api.operations.changepassword.ChangePass
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistration;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationOutput;
+import com.tinqinacademy.authentication.api.operations.demoteuser.DemoteUser;
+import com.tinqinacademy.authentication.api.operations.demoteuser.DemoteUserInput;
+import com.tinqinacademy.authentication.api.operations.demoteuser.DemoteUserOutput;
 import com.tinqinacademy.authentication.api.operations.getuser.GetUser;
 import com.tinqinacademy.authentication.api.operations.getuser.GetUserInput;
 import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
@@ -53,6 +56,7 @@ public class AuthenticationController extends BaseController {
     private final ValidateRecoveryCode validateRecoveryCode;
     private final ChangePassword changePassword;
     private final PromoteUser promoteUser;
+    private final DemoteUser demoteUser;
 
     @Operation(
             summary = "Register Rest API",
@@ -193,4 +197,24 @@ public class AuthenticationController extends BaseController {
         Either<ErrorOutput, PromoteUserOutput> output = promoteUser.process(input);
         return handleOutput(output, HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Demote User Rest API",
+            description = "Demote User API is used for demoting admins to users"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
+    })
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
+    @PostMapping(RestAPIRoutes.DEMOTE_USER)
+    public ResponseEntity<?> demoteUser(@RequestBody DemoteUserInput input) {
+        Either<ErrorOutput, DemoteUserOutput> output = demoteUser.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
+
+
 }

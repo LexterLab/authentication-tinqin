@@ -15,4 +15,5 @@ public class RestAPIRoutes {
     public static final String VALIDATE_RECOVERY_CODE =  AUTHENTICATE + "/validate-recovery-code";
     public static final String CHANGE_PASSWORD =  AUTHENTICATE + "/change-password";
     public static final String PROMOTE_USER =  AUTHENTICATE + "/promote";
+    public static final String DEMOTE_USER =  AUTHENTICATE + "/demote";
 }
