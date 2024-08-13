@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tinqinacademy.emails</groupId>
+            <groupId>com.tinqinacademy.emailservice</groupId>
             <artifactId>restexport</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
