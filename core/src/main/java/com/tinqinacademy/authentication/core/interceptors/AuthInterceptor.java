@@ -25,6 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             String username = tokenProvider.getUsername(token);
             log.info("username: {}", username);
             request.setAttribute("username", username);
+            request.setAttribute("token", token);
             return true;
         }
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
