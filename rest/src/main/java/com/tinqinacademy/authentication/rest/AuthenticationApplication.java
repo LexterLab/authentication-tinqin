@@ -17,7 +17,6 @@ public class AuthenticationApplication {
     public static void main(String[] args) {
         Dotenv dotenv = Dotenv.configure().load();
         System.setProperty("app.jwt-secret", dotenv.get("JWT_SECRET"));
-
         SpringApplication.run(AuthenticationApplication.class, args);
     }
 }
