@@ -1,5 +1,6 @@
 package com.tinqinacademy.authentication.persistence.repositories;
 
+import com.tinqinacademy.authentication.persistence.models.Role;
 import com.tinqinacademy.authentication.persistence.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findUserByEmailIgnoreCase(String email);
     Boolean existsByUsernameIgnoreCase(String username);
     Boolean existsByEmailIgnoreCase(String email);
+    Long countUserByRolesContaining(Role role);
 
     @Transactional
     @Modifying
