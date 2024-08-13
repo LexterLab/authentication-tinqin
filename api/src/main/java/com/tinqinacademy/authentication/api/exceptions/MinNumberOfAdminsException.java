@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public class MinNumberOfAdminsException extends RuntimeException {
     private final String message;
 
-    public MinNumberOfAdminsException(String message) {
+    public MinNumberOfAdminsException() {
         this.message = Messages.MIN_ADMIN_AMOUNT;
     }
 }
