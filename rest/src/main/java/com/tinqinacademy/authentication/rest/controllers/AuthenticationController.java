@@ -14,6 +14,9 @@ import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
 import com.tinqinacademy.authentication.api.operations.login.Login;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginOutput;
+import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUser;
+import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUserInput;
+import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUserOutput;
 import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPassword;
 import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordInput;
 import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordOutput;
@@ -49,6 +52,7 @@ public class AuthenticationController extends BaseController {
     private final ResetPassword resetPassword;
     private final ValidateRecoveryCode validateRecoveryCode;
     private final ChangePassword changePassword;
+    private final PromoteUser promoteUser;
 
     @Operation(
             summary = "Register Rest API",
@@ -172,4 +176,21 @@ public class AuthenticationController extends BaseController {
         return handleOutput(output, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Promote User Rest API",
+            description = "Promote User API is used for promoting users to admin"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
+    })
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
+    @PostMapping(RestAPIRoutes.PROMOTE_USER)
+    public ResponseEntity<?> promoteUser(@RequestBody PromoteUserInput input) {
+        Either<ErrorOutput, PromoteUserOutput> output = promoteUser.process(input);
+        return handleOutput(output, HttpStatus.OK);
+    }
 }
