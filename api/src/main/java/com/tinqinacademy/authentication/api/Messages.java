@@ -18,4 +18,5 @@ public class Messages {
     public static final String UNAUTHORIZED_USER = "Unauthorized user: %s";
     public static final String ALREADY_ADMIN = "User %s already has admin role";
     public static final String MIN_PERMISSIONS = "User %s already has min permissions";
+    public static final String MIN_ADMIN_AMOUNT = "There should always be at least 1 admin in the system";
 }
