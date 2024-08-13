@@ -17,4 +17,5 @@ public class Messages {
     public static final String EMAIL_DONT_MATCH = "Emails do not match %s - %s";
     public static final String UNAUTHORIZED_USER = "Unauthorized user: %s";
     public static final String ALREADY_ADMIN = "User %s already has admin role";
+    public static final String MIN_PERMISSIONS = "User %s already has min permissions";
 }
