@@ -17,6 +17,9 @@ import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
 import com.tinqinacademy.authentication.api.operations.login.Login;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginOutput;
+import com.tinqinacademy.authentication.api.operations.logout.Logout;
+import com.tinqinacademy.authentication.api.operations.logout.LogoutInput;
+import com.tinqinacademy.authentication.api.operations.logout.LogoutOutput;
 import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUser;
 import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUserInput;
 import com.tinqinacademy.authentication.api.operations.promoteuser.PromoteUserOutput;
@@ -57,6 +60,7 @@ public class AuthenticationController extends BaseController {
     private final ChangePassword changePassword;
     private final PromoteUser promoteUser;
     private final DemoteUser demoteUser;
+    private final Logout logout;
 
     @Operation(
             summary = "Register Rest API",
@@ -139,6 +143,7 @@ public class AuthenticationController extends BaseController {
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @PostMapping(RestAPIRoutes.RESET_PASSWORD)
@@ -154,6 +159,7 @@ public class AuthenticationController extends BaseController {
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @PostMapping(RestAPIRoutes.VALIDATE_RECOVERY_CODE)
@@ -169,6 +175,7 @@ public class AuthenticationController extends BaseController {
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @SecurityRequirement(
@@ -187,6 +194,7 @@ public class AuthenticationController extends BaseController {
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @SecurityRequirement(
@@ -205,6 +213,7 @@ public class AuthenticationController extends BaseController {
     @ApiResponses( value = {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @SecurityRequirement(
@@ -217,4 +226,22 @@ public class AuthenticationController extends BaseController {
     }
 
 
+    @Operation(
+            summary = "Logout Rest API",
+            description = "Logout API is used for invalidating jwt tokens"
+    )
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
+            @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
+            @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
+    })
+    @SecurityRequirement(
+            name = "Bearer Authentication"
+    )
+    @PostMapping(RestAPIRoutes.LOGOUT)
+    public ResponseEntity<?> logout() {
+        Either<ErrorOutput, LogoutOutput> output = logout.process(LogoutInput.builder().build());
+        return handleOutput(output, HttpStatus.OK);
+    }
 }

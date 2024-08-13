@@ -29,6 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns(RestAPIRoutes.CHANGE_PASSWORD)
                 .addPathPatterns(RestAPIRoutes.PROMOTE_USER)
-                .addPathPatterns(RestAPIRoutes.DEMOTE_USER);
+                .addPathPatterns(RestAPIRoutes.DEMOTE_USER)
+                .addPathPatterns(RestAPIRoutes.LOGOUT);
     }
 }
