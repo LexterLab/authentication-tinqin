@@ -15,4 +15,5 @@ public class Messages {
     public static final String IDENTICAL_PASSWORDS = "Passwords are identical";
     public static final String PASSWORD_DONT_MATCH = "Passwords do not match";
     public static final String EMAIL_DONT_MATCH = "Emails do not match %s - %s";
+    public static final String UNAUTHORIZED_USER = "Unauthorized user: %s";
 }
