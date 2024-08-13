@@ -13,7 +13,7 @@ import io.vavr.control.Either;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,7 +31,7 @@ public class UserController extends BaseController {
             @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
-    @GetMapping(RestAPIRoutes.FIND_USER)
+    @PostMapping(RestAPIRoutes.FIND_USER)
     public ResponseEntity<?> findUser(@RequestBody FindUserInput findUserInput) {
         Either<ErrorOutput, FindUserOutput> output = findUser.process(findUserInput);
         return handleOutput(output, HttpStatus.OK);

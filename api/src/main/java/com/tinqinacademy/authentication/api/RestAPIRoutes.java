@@ -18,5 +18,5 @@ public class RestAPIRoutes {
     public static final String PROMOTE_USER =  AUTHENTICATE + "/promote";
     public static final String DEMOTE_USER =  AUTHENTICATE + "/demote";
     public static final String LOGOUT =  AUTHENTICATE + "/logout";
-    public static final String FIND_USER = USERS + "/search";
+    public static final String FIND_USER = AUTHENTICATE + USERS +  "/search";
 }
