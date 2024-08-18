@@ -1,5 +1,6 @@
 package com.tinqinacademy.authentication.rest.controllers;
 
+import com.redis.testcontainers.RedisContainer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -16,6 +17,10 @@ public class BaseIntegrationTest {
             .withDatabaseName("test")
             .withUsername("test")
             .withPassword("test");
+
+    @Container
+    private static RedisContainer redis = new RedisContainer(
+            RedisContainer.DEFAULT_IMAGE_NAME.withTag(RedisContainer.DEFAULT_TAG));
 
     @BeforeAll
     static void beforeAll() {
@@ -36,5 +41,11 @@ public class BaseIntegrationTest {
         registry.add("spring.flyway.url", postgres::getJdbcUrl);
         registry.add("spring.flyway.user", postgres::getUsername);
         registry.add("spring.flyway.password", postgres::getPassword);
+
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", redis::getFirstMappedPort);
+
+        //test secret
+        registry.add("app.jwt-secret", () -> "7447a8028b28b2b423c0e6307e41e173b97d1d97d2fd03d87fd8e13195176edf");
     }
 }
