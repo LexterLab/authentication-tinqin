@@ -2,6 +2,7 @@ package com.tinqinacademy.authentication.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
+import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
 import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailInput;
 import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailOutput;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -135,6 +137,48 @@ class AuthenticationControllerTest extends BaseIntegrationTest {
 
 
         mockMvc.perform(post(RestAPIRoutes.REGISTER)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondWithOKWhenSigningIn() throws Exception {
+        LoginInput input = LoginInput.builder()
+                .username("domino222")
+                .password("new2Password")
+                .build();
+
+        mockMvc.perform(post(RestAPIRoutes.LOGIN)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldRespondWithBadRequestWhenSigningInWhileUnverified() throws Exception {
+        LoginInput input = LoginInput.builder()
+                .username("domino")
+                .password("password")
+                .build();
+
+        mockMvc.perform(post(RestAPIRoutes.LOGIN)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondWithWhenSigningInWithBadCredentials() throws Exception {
+        LoginInput input = LoginInput.builder()
+                .username("domino222")
+                .password("wrongpassword")
+                .build();
+
+        mockMvc.perform(post(RestAPIRoutes.LOGIN)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
