@@ -80,6 +80,7 @@ public class RegisterProcessor extends BaseProcessor implements Register {
                         validatorCase(throwable),
                         customCase(throwable, HttpStatus.BAD_REQUEST, EmailAlreadyExistsException.class),
                         customCase(throwable, HttpStatus.BAD_REQUEST, UsernameAlreadyExistException.class),
+                        customCase(throwable, HttpStatus.BAD_REQUEST, PhoneNoExistsException.class),
                         feignCase(throwable),
                         defaultCase(throwable)
                 ));
