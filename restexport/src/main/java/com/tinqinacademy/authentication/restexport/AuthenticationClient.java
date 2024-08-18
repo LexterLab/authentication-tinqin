@@ -1,6 +1,8 @@
 package com.tinqinacademy.authentication.restexport;
 
 import com.tinqinacademy.authentication.api.RouteExports;
+import com.tinqinacademy.authentication.api.operations.finduser.FindUserInput;
+import com.tinqinacademy.authentication.api.operations.finduser.FindUserOutput;
 import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenInput;
 import com.tinqinacademy.authentication.api.operations.generateaccesstoken.GetUsernameFromTokenOutput;
 import com.tinqinacademy.authentication.api.operations.getuser.GetUserOutput;
@@ -26,4 +28,7 @@ public interface AuthenticationClient {
 
     @RequestLine(RouteExports.GET_USER_INFO)
     GetUserOutput getUser(@Param String username);
+
+    @RequestLine(RouteExports.FIND_USER)
+    FindUserOutput findUser(FindUserInput input);
 }

@@ -1,6 +1,5 @@
 package com.tinqinacademy.authentication.rest.configs;
 
-import com.tinqinacademy.authentication.core.jwt.JWTAuthenticationFilter;
 import com.tinqinacademy.authentication.rest.jwt.JWTAuthenticationEntryPoint;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
@@ -19,7 +18,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -39,7 +37,6 @@ import java.util.List;
 )
 public class SecurityConfig {
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JWTAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -67,8 +64,7 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling((exceptions) ->
-                        exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                        exceptions.authenticationEntryPoint(jwtAuthenticationEntryPoint));
 
         return httpSecurity.build();
     }

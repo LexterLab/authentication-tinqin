@@ -67,6 +67,7 @@ public class ResetPasswordProcessor extends BaseProcessor implements ResetPasswo
             return output;
         }).toEither()
                 .mapLeft(throwable -> Match(throwable).of(
+                        validatorCase(throwable),
                         customCase(throwable, HttpStatus.NOT_FOUND, ResourceNotFoundException.class),
                         customCase(throwable, HttpStatus.BAD_REQUEST, TokenAlreadyConfirmedException.class),
                         defaultCase(throwable)

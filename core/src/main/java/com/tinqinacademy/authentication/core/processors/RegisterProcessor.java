@@ -2,6 +2,7 @@ package com.tinqinacademy.authentication.core.processors;
 
 import com.tinqinacademy.authentication.api.errors.ErrorOutput;
 import com.tinqinacademy.authentication.api.exceptions.EmailAlreadyExistsException;
+import com.tinqinacademy.authentication.api.exceptions.PhoneNoExistsException;
 import com.tinqinacademy.authentication.api.exceptions.ResourceNotFoundException;
 import com.tinqinacademy.authentication.api.exceptions.UsernameAlreadyExistException;
 import com.tinqinacademy.authentication.api.operations.register.Register;
@@ -79,6 +80,7 @@ public class RegisterProcessor extends BaseProcessor implements Register {
                         validatorCase(throwable),
                         customCase(throwable, HttpStatus.BAD_REQUEST, EmailAlreadyExistsException.class),
                         customCase(throwable, HttpStatus.BAD_REQUEST, UsernameAlreadyExistException.class),
+                        customCase(throwable, HttpStatus.BAD_REQUEST, PhoneNoExistsException.class),
                         feignCase(throwable),
                         defaultCase(throwable)
                 ));
@@ -97,11 +99,16 @@ public class RegisterProcessor extends BaseProcessor implements Register {
         log.info("Start checkForExistingUser {}", input.getUsername());
         boolean existsEmail = userRepository.existsByEmailIgnoreCase(input.getEmail());
         boolean existsUsername = userRepository.existsByUsernameIgnoreCase(input.getUsername());
+        boolean existsPhoneNo = userRepository.existsByPhoneNo(input.getPhoneNo());
         if (existsEmail) {
             throw new EmailAlreadyExistsException(input.getEmail());
         }
         if (existsUsername) {
             throw new UsernameAlreadyExistException(input.getUsername());
+        }
+
+        if (existsPhoneNo) {
+            throw new PhoneNoExistsException(input.getPhoneNo());
         }
         log.info("End checkForExistingUser {}", input.getUsername());
 
