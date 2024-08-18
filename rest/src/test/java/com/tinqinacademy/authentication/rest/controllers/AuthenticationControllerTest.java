@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
 import com.tinqinacademy.authentication.api.exceptions.ResourceNotFoundException;
 import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
+import com.tinqinacademy.authentication.api.operations.getuser.GetUserInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
@@ -34,8 +35,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -444,6 +445,41 @@ class AuthenticationControllerTest extends BaseIntegrationTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldRespondWithOKAndUserInfoWhenGettingUserInfo() throws Exception {
+        GetUserInput input = GetUserInput
+                .builder()
+                .username("domino222")
+                .build();
+
+        mockMvc.perform(get(RestAPIRoutes.GET_USER, input.getUsername()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("domino222"))
+                .andExpect(jsonPath("$.email").value("domino222@gmail.com"));
+    }
+
+    @Test
+    void shouldRespondWithBadRequestWhenGettingUserInfoWithBlankUsername() throws Exception {
+        GetUserInput input = GetUserInput
+                .builder()
+                .username(" ")
+                .build();
+
+        mockMvc.perform(get(RestAPIRoutes.GET_USER, input.getUsername()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondWithNotFoundWhenGettingUserInfoWithUnknownUsername() throws Exception {
+        GetUserInput input = GetUserInput
+                .builder()
+                .username("test")
+                .build();
+
+        mockMvc.perform(get(RestAPIRoutes.GET_USER, input.getUsername()))
                 .andExpect(status().isNotFound());
     }
 
