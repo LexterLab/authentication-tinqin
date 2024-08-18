@@ -3,11 +3,14 @@ package com.tinqinacademy.authentication.rest.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tinqinacademy.authentication.api.RestAPIRoutes;
 import com.tinqinacademy.authentication.api.exceptions.ResourceNotFoundException;
+import com.tinqinacademy.authentication.api.operations.confirmregistration.ConfirmRegistrationInput;
 import com.tinqinacademy.authentication.api.operations.login.LoginInput;
 import com.tinqinacademy.authentication.api.operations.recoverpassword.RecoverPasswordInput;
 import com.tinqinacademy.authentication.api.operations.register.RegisterInput;
 import com.tinqinacademy.authentication.api.operations.resetpassword.ResetPasswordInput;
+import com.tinqinacademy.authentication.persistence.crudrepositories.ConfirmationTokenRepository;
 import com.tinqinacademy.authentication.persistence.crudrepositories.RecoveryTokenRepository;
+import com.tinqinacademy.authentication.persistence.models.ConfirmationToken;
 import com.tinqinacademy.authentication.persistence.models.RecoveryToken;
 import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailInput;
 import com.tinqinacademy.emails.api.operations.sendconfirmemail.SendConfirmEmailOutput;
@@ -47,6 +50,9 @@ class AuthenticationControllerTest extends BaseIntegrationTest {
 
     @MockBean
     private RecoveryTokenRepository recoveryTokenRepository;
+
+    @MockBean
+    private ConfirmationTokenRepository confirmationTokenRepository;
 
     @MockBean
     private EmailClient emailClient;
@@ -318,6 +324,123 @@ class AuthenticationControllerTest extends BaseIntegrationTest {
         when(recoveryTokenRepository.findById(any(String.class))).thenReturn(Optional.of(token));
 
         mockMvc.perform(post(RestAPIRoutes.RESET_PASSWORD)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldRespondWithOKWhenConfirmingRegistration() throws Exception {
+        ConfirmationToken token = ConfirmationToken
+                .builder()
+                .value(UUID.randomUUID().toString())
+                .confirmedAt(null)
+                .expirySeconds(900L)
+                .createdAt(LocalDateTime.now().toString())
+                .userId("1a419320-edf3-4b69-8f41-ce472f866a19")
+                .build();
+
+        ConfirmRegistrationInput input = ConfirmRegistrationInput
+                .builder()
+                .confirmationCode(UUID.randomUUID().toString())
+                .build();
+
+        when(confirmationTokenRepository.findById(any(String.class))).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post(RestAPIRoutes.CONFIRM_REGISTRATION)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldRespondWithBadRequestWhenConfirmingAlreadyConfirmedRegistration() throws Exception {
+        ConfirmationToken token = ConfirmationToken
+                .builder()
+                .value(UUID.randomUUID().toString())
+                .confirmedAt(LocalDateTime.now().toString())
+                .expirySeconds(900L)
+                .createdAt(LocalDateTime.now().toString())
+                .userId("1a419320-edf3-4b69-8f41-ce472f866a19")
+                .build();
+
+        ConfirmRegistrationInput input = ConfirmRegistrationInput
+                .builder()
+                .confirmationCode(UUID.randomUUID().toString())
+                .build();
+
+        when(confirmationTokenRepository.findById(any(String.class))).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post(RestAPIRoutes.CONFIRM_REGISTRATION)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondWithBadRequestWhenConfirmingRegistrationOfAVerifiedUser() throws Exception {
+        ConfirmationToken token = ConfirmationToken
+                .builder()
+                .value(UUID.randomUUID().toString())
+                .confirmedAt(null)
+                .expirySeconds(900L)
+                .createdAt(LocalDateTime.now().toString())
+                .userId("8eabb4ff-df5b-4e39-8642-0dcce375798c")
+                .build();
+
+        ConfirmRegistrationInput input = ConfirmRegistrationInput
+                .builder()
+                .confirmationCode(UUID.randomUUID().toString())
+                .build();
+
+        when(confirmationTokenRepository.findById(any(String.class))).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post(RestAPIRoutes.CONFIRM_REGISTRATION)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRespondWithNotFoundWhenConfirmingUnknownRegistrationCode() throws Exception {
+
+        ConfirmRegistrationInput input = ConfirmRegistrationInput
+                .builder()
+                .confirmationCode(UUID.randomUUID().toString())
+                .build();
+
+        when(confirmationTokenRepository.findById(any(String.class))).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(post(RestAPIRoutes.CONFIRM_REGISTRATION)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldRespondWithNotFoundWhenConfirmingRegistrationOfAUnknownUser() throws Exception {
+        ConfirmationToken token = ConfirmationToken
+                .builder()
+                .value(UUID.randomUUID().toString())
+                .confirmedAt(null)
+                .expirySeconds(900L)
+                .createdAt(LocalDateTime.now().toString())
+                .userId("8eabb4ff-df5b-4e39-8642-0dcce375798a")
+                .build();
+
+        ConfirmRegistrationInput input = ConfirmRegistrationInput
+                .builder()
+                .confirmationCode(UUID.randomUUID().toString())
+                .build();
+
+        when(confirmationTokenRepository.findById(any(String.class))).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post(RestAPIRoutes.CONFIRM_REGISTRATION)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
