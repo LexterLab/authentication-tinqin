@@ -35,19 +35,20 @@ import com.tinqinacademy.authentication.api.operations.resetpassword.ResetPasswo
 import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCode;
 import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCodeInput;
 import com.tinqinacademy.authentication.api.operations.validaterecoverycode.ValidateRecoveryCodeOutput;
+import com.tinqinacademy.restexportprocessor.main.RestExport;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.vavr.control.Either;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor
 @Tag(name = "Authentication REST APIs")
 public class AuthenticationController extends BaseController {
     private final Register register;
@@ -62,12 +63,30 @@ public class AuthenticationController extends BaseController {
     private final DemoteUser demoteUser;
     private final Logout logout;
 
+    public AuthenticationController(Register register, Login login, ConfirmRegistration confirmRegistration, GetUser getUser, RecoverPassword recoverPassword, ResetPassword resetPassword, ValidateRecoveryCode validateRecoveryCode, ChangePassword changePassword, PromoteUser promoteUser, DemoteUser demoteUser, Logout logout) {
+        this.register = register;
+        this.login = login;
+        this.confirmRegistration = confirmRegistration;
+        this.getUser = getUser;
+        this.recoverPassword = recoverPassword;
+        this.resetPassword = resetPassword;
+        this.validateRecoveryCode = validateRecoveryCode;
+        this.changePassword = changePassword;
+        this.promoteUser = promoteUser;
+        this.demoteUser = demoteUser;
+        this.logout = logout;
+    }
+
     @Operation(
             summary = "Register Rest API",
             description = "Register Rest API is used for registering user and sending confirmation email"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "201", description = "HTTP STATUS 201 CREATED"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "HTTP STATUS 201 CREATED", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = RegisterOutput.class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
     })
     @PostMapping(RestAPIRoutes.REGISTER)
@@ -81,7 +100,11 @@ public class AuthenticationController extends BaseController {
             description = "Login Rest API is used for signing in user and returning access token header"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "HTTP STATUS 201 CREATED", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = LoginOutput.class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
     })
     @PostMapping(RestAPIRoutes.LOGIN)
@@ -96,7 +119,11 @@ public class AuthenticationController extends BaseController {
             description = "Confirm Registration Rest API is used for verifying users"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ConfirmRegistrationOutput.class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
     })
     @PostMapping(RestAPIRoutes.CONFIRM_REGISTRATION)
@@ -110,11 +137,16 @@ public class AuthenticationController extends BaseController {
             description = "Get User Info  Rest API is used for retrieving signed  user's info"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = GetUserOutput.class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
     })
     @GetMapping(RestAPIRoutes.GET_USER)
+    @RestExport
     public ResponseEntity<?> getUserInfo(@PathVariable String username) {
         Either<ErrorOutput, GetUserOutput> outputs = getUser.process(GetUserInput
                 .builder()
@@ -128,7 +160,11 @@ public class AuthenticationController extends BaseController {
             description = "Recover Password Rest API is used for sending password recovery email to users"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = RecoverPasswordOutput .class))
+            ),
     })
     @PostMapping(RestAPIRoutes.RECOVER_PASSWORD)
     public ResponseEntity<?> recoverPassword(@RequestBody RecoverPasswordInput input) {
@@ -141,7 +177,11 @@ public class AuthenticationController extends BaseController {
             description = "Reset Password Rest API is used for resetting user's password with code"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResetPasswordOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
@@ -157,7 +197,11 @@ public class AuthenticationController extends BaseController {
             description = "Validate Recovery Code API is used for validating recovery code before resetting password"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ValidateRecoveryCodeOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
@@ -173,7 +217,11 @@ public class AuthenticationController extends BaseController {
             description = "Change Password API is used for changing user's password"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ChangePasswordOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
@@ -192,7 +240,11 @@ public class AuthenticationController extends BaseController {
             description = "Promote User API is used for promoting users to admin"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = PromoteUserOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
@@ -211,7 +263,11 @@ public class AuthenticationController extends BaseController {
             description = "Demote User API is used for demoting admins to users"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = DemoteUserOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
@@ -231,7 +287,11 @@ public class AuthenticationController extends BaseController {
             description = "Logout API is used for invalidating jwt tokens"
     )
     @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "HTTP STATUS 200 OK"),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP STATUS 200 SUCCESS", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = LogoutOutput .class))
+            ),
             @ApiResponse(responseCode = "400", description = "HTTP STATUS 400 BAD REQUEST"),
             @ApiResponse(responseCode = "401", description = "HTTP STATUS 401 UNAUTHORIZED"),
             @ApiResponse(responseCode = "404", description = "HTTP STATUS 404 NOT FOUND")
