@@ -6,4 +6,5 @@ public class RouteExports {
     public static final String LOAD_USER_DETAILS = "POST " + RestAPIRoutes.LOAD_USER;
     public static final String GET_USER_INFO = "GET " + RestAPIRoutes.GET_USER;
     public static final String FIND_USER = "POST " + RestAPIRoutes.FIND_USER;
+    public static final String CLIENT = "./restexport/src/main/java/com/tinqinacademy/authentication/restexport";
 }
